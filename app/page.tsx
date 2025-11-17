@@ -71,8 +71,7 @@ const Home = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/profiles");
-      const data = await res.json();
+      const data = await apiGet<any[]>("/profiles");
       setProfile(data[0]);
     } catch (err) {
       console.error("Error fetching profile:", err);

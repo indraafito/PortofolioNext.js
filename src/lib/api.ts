@@ -1,6 +1,6 @@
 import { getAuthToken } from "@/lib/auth";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 type FetchOptions = RequestInit & {
   auth?: boolean;

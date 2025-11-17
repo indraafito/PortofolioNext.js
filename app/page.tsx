@@ -71,7 +71,7 @@ const Home = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:3001/profiles");
+      const res = await fetch("http://localhost:3001/api/profiles");
       const data = await res.json();
       setProfile(data[0]);
     } catch (err) {

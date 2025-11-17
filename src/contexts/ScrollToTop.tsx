@@ -1,8 +1,10 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+"use client"; // penting untuk hook dan useEffect di Next.js 13+
 
-export const ScrollToTop = () => {
-  const { pathname } = useLocation();
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+const ScrollToTop = () => {
+  const pathname = usePathname(); // sama seperti useLocation di react-router-dom
 
   useEffect(() => {
     window.scrollTo({
@@ -13,3 +15,5 @@ export const ScrollToTop = () => {
 
   return null;
 };
+
+export default ScrollToTop;

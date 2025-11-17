@@ -49,13 +49,11 @@ async function request<T>(path: string, options: FetchOptions = {}): Promise<T> 
 }
 
 export const apiGet = <T>(path: string, options?: FetchOptions) => request<T>(path, { ...options, method: "GET" });
-export const apiPost = <T>(path: string, body?: unknown, options?: FetchOptions) =>
-  request<T>(path, { ...options, method: "POST", body });
-export const apiPut = <T>(path: string, body?: unknown, options?: FetchOptions) =>
-  request<T>(path, { ...options, method: "PUT", body });
-export const apiPatch = <T>(path: string, body?: unknown, options?: FetchOptions) =>
-  request<T>(path, { ...options, method: "PATCH", body });
+export const apiPost = <T>(path: string, body?: BodyInit | Record<string, any>, options?: FetchOptions) =>
+  request<T>(path, { ...options, method: "POST", body: body as BodyInit });
+export const apiPut = <T>(path: string, body?: BodyInit | Record<string, any>, options?: FetchOptions) =>
+  request<T>(path, { ...options, method: "PUT", body: body as BodyInit });
+export const apiPatch = <T>(path: string, body?: BodyInit | Record<string, any>, options?: FetchOptions) =>
+  request<T>(path, { ...options, method: "PATCH", body: body as BodyInit });
 export const apiDelete = <T>(path: string, options?: FetchOptions) =>
   request<T>(path, { ...options, method: "DELETE" });
-
-

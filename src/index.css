@@ -1,0 +1,472 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Background Colors - Dark theme with subtle gradients */
+    --background: 222 47% 5%;
+    --foreground: 0 0% 98%;
+
+    /* Card Colors - Glassmorphism effect */
+    --card: 222 47% 8%;
+    --card-foreground: 0 0% 98%;
+
+    /* Popover Colors */
+    --popover: 222 47% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary - Purple Neon (default theme color) */
+    --primary: 258 90% 66%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 258 100% 75%;
+
+    /* Secondary Colors */
+    --secondary: 222 47% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted Colors */
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent Colors */
+    --accent: 258 90% 66%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border and Input */
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
+    --ring: 258 90% 66%;
+
+    /* Border Radius */
+    --radius: 0.75rem;
+
+    /* Sidebar Colors */
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 258 90% 66%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 12%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 222 47% 18%;
+    --sidebar-ring: 258 90% 66%;
+
+    /* Custom Design Tokens */
+    --glow-sm: 0 0 10px hsl(var(--primary) / 0.5);
+    --glow-md: 0 0 20px hsl(var(--primary) / 0.4), 0 0 40px hsl(var(--primary) / 0.2);
+    --glow-lg: 0 0 30px hsl(var(--primary) / 0.5), 0 0 60px hsl(var(--primary) / 0.3), 0 0 90px hsl(var(--primary) / 0.1);
+    
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --gradient-radial: radial-gradient(circle at center, hsl(var(--primary) / 0.15) 0%, transparent 70%);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-['Poppins',sans-serif] antialiased;
+    background-image: radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.06) 0%, transparent 50%);
+    cursor: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Neon Glow Button */
+  .btn-glow {
+    @apply relative overflow-hidden;
+    box-shadow: var(--glow-sm);
+    transition: var(--transition-smooth);
+  }
+  
+  .btn-glow:hover {
+    box-shadow: var(--glow-md);
+    transform: translateY(-2px);
+  }
+
+    /* Cursor-aware spotlight for selected areas (Home hero) */
+    .cursor-area {
+      position: relative;
+      --mx: 50%;
+      --my: 50%;
+      --cursor-opacity: 0;
+      isolation: isolate;
+    }
+
+    .cursor-area::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--mx) var(--my), hsl(var(--primary-glow) / 0.38) 0%, transparent 30%);
+      opacity: var(--cursor-opacity);
+      transition: opacity 0.18s linear, background-position 0.06s linear;
+      mix-blend-mode: screen;
+      filter: blur(18px);
+      z-index: 10;
+    }
+
+    /* Slight local glow on headline when cursor is active */
+    .cursor-area .glow-text {
+      position: relative;
+      transition: text-shadow 0.12s ease, color 0.12s ease;
+      z-index: 20;
+    }
+
+    .cursor-area:where(:hover, [style*="--cursor-opacity: 1"]) .glow-text {
+      text-shadow: 0 8px 36px hsl(var(--primary-glow) / 0.85), 0 2px 8px hsl(var(--primary-glow) / 0.6);
+    }
+
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply backdrop-blur-md bg-card/50 border border-border/50;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  /* Neon Border */
+  .neon-border {
+    @apply border-2 border-primary/50;
+    box-shadow: var(--glow-sm), inset var(--glow-sm);
+    transition: var(--transition-smooth);
+  }
+
+  .neon-border:hover {
+    @apply border-primary;
+    box-shadow: var(--glow-md), inset var(--glow-sm);
+  }
+
+  /* Glow Text */
+  .glow-text {
+    text-shadow: 0 0 10px hsl(var(--primary) / 0.5),
+                 0 0 20px hsl(var(--primary) / 0.3),
+                 0 0 30px hsl(var(--primary) / 0.2);
+  }
+
+  /* Smooth Scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
+  }
+}
+
+/* Neon Fire Animation - Ultra Smooth Breathing Effect */
+@keyframes fireGlow {
+  0% {
+    filter: blur(70px);
+    transform: scale(0.700) translateY(0px);
+    opacity: 0.700;
+  }
+  2% {
+    filter: blur(71px);
+    transform: scale(0.706) translateY(-0.3px);
+    opacity: 0.706;
+  }
+  4% {
+    filter: blur(72px);
+    transform: scale(0.712) translateY(-0.6px);
+    opacity: 0.712;
+  }
+  6% {
+    filter: blur(73px);
+    transform: scale(0.718) translateY(-0.9px);
+    opacity: 0.718;
+  }
+  8% {
+    filter: blur(74px);
+    transform: scale(0.724) translateY(-1.2px);
+    opacity: 0.724;
+  }
+  10% {
+    filter: blur(76px);
+    transform: scale(0.730) translateY(-1.5px);
+    opacity: 0.730;
+  }
+  12% {
+    filter: blur(78px);
+    transform: scale(0.736) translateY(-1.8px);
+    opacity: 0.736;
+  }
+  14% {
+    filter: blur(80px);
+    transform: scale(0.742) translateY(-2.1px);
+    opacity: 0.742;
+  }
+  16% {
+    filter: blur(82px);
+    transform: scale(0.748) translateY(-2.4px);
+    opacity: 0.748;
+  }
+  18% {
+    filter: blur(84px);
+    transform: scale(0.754) translateY(-2.7px);
+    opacity: 0.754;
+  }
+  20% {
+    filter: blur(86px);
+    transform: scale(0.760) translateY(-3.0px);
+    opacity: 0.760;
+  }
+  22% {
+    filter: blur(88px);
+    transform: scale(0.766) translateY(-3.3px);
+    opacity: 0.766;
+  }
+  24% {
+    filter: blur(90px);
+    transform: scale(0.772) translateY(-3.6px);
+    opacity: 0.772;
+  }
+  26% {
+    filter: blur(92px);
+    transform: scale(0.778) translateY(-3.9px);
+    opacity: 0.778;
+  }
+  28% {
+    filter: blur(94px);
+    transform: scale(0.784) translateY(-4.2px);
+    opacity: 0.784;
+  }
+  30% {
+    filter: blur(96px);
+    transform: scale(0.790) translateY(-4.5px);
+    opacity: 0.790;
+  }
+  32% {
+    filter: blur(98px);
+    transform: scale(0.796) translateY(-4.8px);
+    opacity: 0.796;
+  }
+  34% {
+    filter: blur(99px);
+    transform: scale(0.802) translateY(-5.1px);
+    opacity: 0.802;
+  }
+  36% {
+    filter: blur(101px);
+    transform: scale(0.808) translateY(-5.4px);
+    opacity: 0.808;
+  }
+  38% {
+    filter: blur(102px);
+    transform: scale(0.814) translateY(-5.7px);
+    opacity: 0.814;
+  }
+  40% {
+    filter: blur(103px);
+    transform: scale(0.820) translateY(-6.0px);
+    opacity: 0.820;
+  }
+  42% {
+    filter: blur(104px);
+    transform: scale(0.826) translateY(-6.3px);
+    opacity: 0.826;
+  }
+  44% {
+    filter: blur(105px);
+    transform: scale(0.832) translateY(-6.6px);
+    opacity: 0.832;
+  }
+  46% {
+    filter: blur(106px);
+    transform: scale(0.838) translateY(-6.9px);
+    opacity: 0.838;
+  }
+  48% {
+    filter: blur(107px);
+    transform: scale(0.844) translateY(-7.0px);
+    opacity: 0.844;
+  }
+  50% {
+    filter: blur(108px);
+    transform: scale(0.933) translateY(-7.0px);
+    opacity: 0.933;
+  }
+  52% {
+    filter: blur(107px);
+    transform: scale(0.939) translateY(-6.8px);
+    opacity: 0.939;
+  }
+  54% {
+    filter: blur(106px);
+    transform: scale(0.945) translateY(-6.6px);
+    opacity: 0.945;
+  }
+  56% {
+    filter: blur(105px);
+    transform: scale(0.951) translateY(-6.3px);
+    opacity: 0.951;
+  }
+  58% {
+    filter: blur(104px);
+    transform: scale(0.957) translateY(-6.0px);
+    opacity: 0.957;
+  }
+  60% {
+    filter: blur(103px);
+    transform: scale(0.963) translateY(-5.7px);
+    opacity: 0.963;
+  }
+  62% {
+    filter: blur(102px);
+    transform: scale(0.969) translateY(-5.4px);
+    opacity: 0.969;
+  }
+  64% {
+    filter: blur(101px);
+    transform: scale(0.975) translateY(-5.1px);
+    opacity: 0.975;
+  }
+  66% {
+    filter: blur(99px);
+    transform: scale(0.981) translateY(-4.8px);
+    opacity: 0.981;
+  }
+  68% {
+    filter: blur(98px);
+    transform: scale(0.987) translateY(-4.5px);
+    opacity: 0.987;
+  }
+  70% {
+    filter: blur(96px);
+    transform: scale(1.000) translateY(-4.2px);
+    opacity: 1.000;
+  }
+  72% {
+    filter: blur(96px);
+    transform: scale(0.993) translateY(-4.0px);
+    opacity: 0.993;
+  }
+  74% {
+    filter: blur(97px);
+    transform: scale(0.984) translateY(-3.8px);
+    opacity: 0.984;
+  }
+  76% {
+    filter: blur(98px);
+    transform: scale(0.975) translateY(-3.6px);
+    opacity: 0.975;
+  }
+  78% {
+    filter: blur(99px);
+    transform: scale(0.966) translateY(-3.4px);
+    opacity: 0.966;
+  }
+  80% {
+    filter: blur(99px);
+    transform: scale(0.957) translateY(-3.2px);
+    opacity: 0.957;
+  }
+  82% {
+    filter: blur(99px);
+    transform: scale(0.948) translateY(-2.9px);
+    opacity: 0.948;
+  }
+  84% {
+    filter: blur(98px);
+    transform: scale(0.939) translateY(-2.6px);
+    opacity: 0.939;
+  }
+  86% {
+    filter: blur(96px);
+    transform: scale(0.930) translateY(-2.3px);
+    opacity: 0.930;
+  }
+  88% {
+    filter: blur(94px);
+    transform: scale(0.921) translateY(-2.0px);
+    opacity: 0.921;
+  }
+  90% {
+    filter: blur(91px);
+    transform: scale(0.845) translateY(-1.5px);
+    opacity: 0.845;
+  }
+  92% {
+    filter: blur(88px);
+    transform: scale(0.769) translateY(-0.9px);
+    opacity: 0.769;
+  }
+  94% {
+    filter: blur(82px);
+    transform: scale(0.738) translateY(-0.5px);
+    opacity: 0.738;
+  }
+  96% {
+    filter: blur(76px);
+    transform: scale(0.718) translateY(-0.2px);
+    opacity: 0.718;
+  }
+  98% {
+    filter: blur(72px);
+    transform: scale(0.709) translateY(0px);
+    opacity: 0.709;
+  }
+  100% {
+    filter: blur(70px);
+    transform: scale(0.700) translateY(0px);
+    opacity: 0.700;
+  }
+}
+
+@keyframes fireGlowShift {
+  0% {
+    transform: scale(1.2) translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: scale(1.35) translateY(-10px) translateX(5px);
+  }
+  50% {
+    transform: scale(1.45) translateY(-5px) translateX(-3px);
+  }
+  75% {
+    transform: scale(1.25) translateY(-8px) translateX(-5px);
+  }
+  100% {
+    transform: scale(1.2) translateY(0px) translateX(0px);
+  }
+}
+
+@layer utilities {
+  .animate-fireGlow {
+    animation: fireGlow 4s ease-in-out infinite;
+  }
+
+  .animate-fireGlowShift {
+    animation: fireGlowShift 4s ease-in-out infinite;
+  }
+}
+

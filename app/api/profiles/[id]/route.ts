@@ -4,8 +4,9 @@ import { query } from '@/lib/db'
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params
   return authenticate(async (req: NextRequest) => {
     try {
       const body = await req.json()
@@ -19,7 +20,7 @@ export async function PUT(
              updated_at = NOW()
          WHERE id = $5
          RETURNING *`,
-        [full_name, tagline ?? null, title ?? null, photo_url ?? null, params.id],
+        [full_name, tagline ?? null, title ?? null, photo_url ?? null, id],
       )
       if (rows.length === 0) {
         return NextResponse.json(

@@ -4,13 +4,14 @@ import { authenticate, corsHeaders } from '@/lib/middleware'
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params
   return authenticate(async (req: NextRequest) => {
     try {
       const { rows } = await query(
         'DELETE FROM contact_messages WHERE id = $1 RETURNING id',
-        [params.id],
+        [id],
       )
       if (rows.length === 0) {
         return NextResponse.json(

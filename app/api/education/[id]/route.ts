@@ -16,8 +16,9 @@ const educationSchema = z.object({
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params
   return authenticate(async (req: NextRequest) => {
     try {
       const body = await req.json()
@@ -43,7 +44,7 @@ export async function PUT(
           { status: 400, headers: corsHeaders() },
         )
       }
-      values.push(params.id)
+      values.push(id)
       const { rows } = await query(
         `UPDATE education SET ${fields.join(', ')}, updated_at = NOW() 
          WHERE id = $${values.length} RETURNING *`,
@@ -67,13 +68,14 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params
   return authenticate(async (req: NextRequest) => {
     try {
       const { rows } = await query(
         'DELETE FROM education WHERE id = $1 RETURNING id',
-        [params.id],
+        [id],
       )
       if (rows.length === 0) {
         return NextResponse.json(

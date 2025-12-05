@@ -4,8 +4,9 @@ import { authenticate, corsHeaders } from '@/lib/middleware'
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params
   return authenticate(async (req: NextRequest) => {
     try {
       const body = await req.json()
@@ -15,7 +16,7 @@ export async function PATCH(
          SET read = $1
          WHERE id = $2
          RETURNING *`,
-        [!!read, params.id],
+        [!!read, id],
       )
       if (rows.length === 0) {
         return NextResponse.json(
@@ -36,4 +37,3 @@ export async function PATCH(
 export async function OPTIONS() {
   return new NextResponse(null, { status: 200, headers: corsHeaders() })
 }
-

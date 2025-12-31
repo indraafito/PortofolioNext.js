@@ -17,7 +17,9 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { apiGet } from "@/lib/api";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import * as LucideIcons from "lucide-react";
+import { Icon as Iconify } from "@iconify/react";
+import { LogoLoop } from "@/components/LogoLoop";
+import BlurText from "@/components/ui/BlurText";
 
 interface Education {
   id: string;
@@ -81,7 +83,7 @@ const Home = () => {
   const fetchEducation = async () => {
     try {
       const data = await apiGet<Education[]>("/education");
-      setEducation(data.slice(0, 2)); // Ambil 2 teratas
+      setEducation(data);
     } catch (error) {
       console.error(error);
     }
@@ -105,102 +107,18 @@ const Home = () => {
     }
   };
 
-  const getIcon = (iconName: string | null) => {
-    if (!iconName) return LucideIcons.Code;
-    const Icon = (LucideIcons as any)[iconName];
-    return Icon || LucideIcons.Code;
+  const getIconElement = (iconName: string | null) => {
+    if (!iconName) return <Iconify icon="lucide:code" className="h-6 w-6 text-primary" />;
+    return <Iconify icon={iconName} className="h-6 w-6 text-primary" />;
   };
-
-  // Ganti bagian loading di komponen Home dengan ini:
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Animated background particles */}
-        <div className="absolute inset-0">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-primary/20"
-              style={{
-                width: Math.random() * 100 + 50 + "px",
-                height: Math.random() * 100 + 50 + "px",
-                left: Math.random() * 100 + "%",
-                top: Math.random() * 100 + "%",
-                animation: `float ${
-                  Math.random() * 10 + 5
-                }s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 2}s`,
-                filter: "blur(40px)",
-                opacity: 0.3,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Main loading content */}
-        <div className="relative z-10 flex flex-col items-center gap-6">
-          {/* Animated logo/spinner */}
-          <div className="relative">
-            {/* Outer rotating ring */}
-            <div className="w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-
-            {/* Inner pulsing circle */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-primary/30 animate-pulse" />
-            </div>
-
-            {/* Center sparkle */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-primary animate-pulse" />
-            </div>
-
-            {/* Glow effect */}
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle, hsl(var(--primary) / 0.4), transparent)",
-                filter: "blur(20px)",
-                animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              }}
-            />
-          </div>
-
-          {/* Loading text */}
-          <div className="text-center space-y-2">
-            <p className="text-xl font-semibold text-primary animate-pulse">
-              Loading
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0ms" }}
-              >
-                .
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "150ms" }}
-              >
-                .
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "300ms" }}
-              >
-                .
-              </span>
-            </p>
-            <p className="text-sm text-muted-foreground">Just a moment</p>
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-64 h-1 bg-secondary rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-primary rounded-full"
-              style={{
-                animation: "loading-progress 2s ease-in-out infinite",
-              }}
-            />
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-white/80 text-lg font-medium">Loading...</p>
+          <div className="mt-4 h-1 rounded-full overflow-hidden">
+            <div className="h-full bg-white/20 rounded-full" style={{ animation: "loading-progress 1.8s ease-in-out infinite" }} />
           </div>
         </div>
       </div>
@@ -274,28 +192,37 @@ const Home = () => {
               }}
               className="space-y-6 text-center md:text-left order-2 md:order-2 animate-fade-in cursor-area"
             >
-              <h1 className="text-5xl md:text-6xl font-bold glow-text">
-                {profile.full_name}
-              </h1>
+              <BlurText 
+                text={profile.full_name}
+                className="text-5xl md:text-5xl font-bold glow-text mb-2"
+                delay={0.1}
+                duration={0.8}
+              />
 
-              <p className="text-2xl text-primary font-semibold">
-                {profile.title}
-              </p>
+              <BlurText 
+                text={profile.title}
+                className="text-2xl text-primary font-semibold mb-4"
+                delay={0.3}
+                duration={0.8}
+              />
 
-              <p className="text-lg text-muted-foreground max-w-xl">
-                {profile.tagline}
-              </p>
+              <BlurText 
+                text={profile.tagline}
+                className="text-lg text-muted-foreground max-w-xl mb-6"
+                delay={0.5}
+                duration={0.8}
+              />
 
               <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-4">
                 <Link href="/projects" passHref>
-                  <Button className="btn-glow" size="lg">
+                  <Button className="rounded-full px-6 py-2.5 h-11 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50 transition-all duration-300 hover:scale-105 focus-visible:ring-0" size="lg">
                     View Projects
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
 
                 <Link href="/contact">
-                  <Button variant="outline" size="lg" className="neon-border">
+                  <Button variant="ghost" size="lg" className="rounded-full px-6 py-2.5 h-11 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 focus-visible:ring-0">
                     Contact Me
                   </Button>
                 </Link>
@@ -306,7 +233,7 @@ const Home = () => {
                   href="https://github.com/indraafito"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-full border border-primary/50 hover:border-primary hover:shadow-glow-md transition-all"
+                  className="p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
                   <Github className="h-5 w-5" />
                 </a>
@@ -315,14 +242,14 @@ const Home = () => {
                   href="https://linkedin.com/in/indraafito"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-full border border-primary/50 hover:border-primary hover:shadow-glow-md transition-all"
+                  className="p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
                   <Linkedin className="h-5 w-5" />
                 </a>
 
                 <a
                   href="mailto:indraafito56@gmail.com"
-                  className="p-3 rounded-full border border-primary/50 hover:border-primary hover:shadow-glow-md transition-all"
+                  className="p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
                   <Mail className="h-5 w-5" />
                 </a>
@@ -339,50 +266,65 @@ const Home = () => {
             <div data-aos="fade-up">
               <div className="flex items-center justify-between mb-12">
                 <div>
-                  <h2 className="text-4xl font-bold glow-text mb-2">
-                    Education
-                  </h2>
-                  <p className="text-muted-foreground">
-                    My educational background
-                  </p>
+                  <h2 className="text-4xl font-bold glow-text mb-2">Education Journey</h2>
+                  <p className="text-muted-foreground">My educational background</p>
                 </div>
                 <Link href="/about">
-                  <Button variant="outline" className="neon-border">
-                    View All
+                  <Button variant="ghost" className="rounded-full px-5 py-2 h-9 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0">
+                    View Details
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="space-y-6">
-              {education.map((edu, index) => (
-                <div
-                  key={edu.id}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                  className="glass-card p-6 rounded-lg hover:shadow-glow-md transition-all duration-300"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
-                      <GraduationCap className="h-6 w-6 text-primary" />
+            {/* Timeline Container */}
+            <div className="relative">
+              {/* Horizontal Line */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent" style={{ transform: 'translateY(-50%)' }} />
+              
+              {/* Timeline Items */}
+              <div className="relative flex justify-between items-center py-20">
+                {education.map((edu, index) => {
+                  const isTop = index % 2 === 0;
+                  return (
+                    <div
+                      key={edu.id}
+                      data-aos={isTop ? "fade-down" : "fade-up"}
+                      data-aos-delay={index * 150}
+                      className="flex flex-col items-center"
+                      style={{ flex: 1 }}
+                    >
+                      {/* Card positioned above or below */}
+                      <div className={`flex flex-col items-center ${isTop ? 'mb-8' : 'mt-8'} ${isTop ? 'order-1' : 'order-3'}`}>
+                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group w-48">
+                          <div className="flex flex-col items-center text-center gap-2">
+                            <div className="p-2 rounded-xl bg-primary/10 border border-primary/30 group-hover:scale-110 transition-transform duration-300">
+                              <GraduationCap className="h-5 w-5 text-primary" />
+                            </div>
+                            <h3 className="text-sm font-bold text-white/90 line-clamp-2">
+                              {edu.institution}
+                            </h3>
+                            <p className="text-xs text-primary font-medium">
+                              {edu.start_year} - {edu.end_year || "Present"}
+                            </p>
+                          </div>
+                        </div>
+                        {/* Connecting Line */}
+                        <div className={`w-0.5 ${isTop ? 'h-8 bg-gradient-to-b' : 'h-8 bg-gradient-to-t'} from-primary/50 to-transparent ${isTop ? 'order-2' : 'order-1'}`} />
+                      </div>
+                      
+                      {/* Center Dot */}
+                      <div className="relative z-10 order-2">
+                        <div className="w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg shadow-primary/50 group-hover:scale-125 transition-transform duration-300" />
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold mb-1">
-                        {edu.institution}
-                      </h3>
-                      <p className="text-primary font-semibold">
-                        {edu.degree}
-                        {edu.field_of_study && ` - ${edu.field_of_study}`}
-                      </p>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        {edu.start_year} - {edu.end_year || "Present"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
+
+            
           </div>
         </div>
       )}
@@ -400,7 +342,7 @@ const Home = () => {
                   </p>
                 </div>
                 <Link href="/skills">
-                  <Button variant="outline" className="neon-border">
+                  <Button variant="ghost" className="rounded-full px-5 py-2 h-9 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0">
                     View All
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -408,41 +350,13 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {skills.map((skill, index) => {
-                const Icon = getIcon(skill.icon_name);
-                return (
-                  <div
-                    key={skill.id}
-                    data-aos="zoom-in"
-                    data-aos-delay={index * 50}
-                    className="glass-card p-6 rounded-lg hover:shadow-glow-md transition-all duration-300 group"
-                  >
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="p-3 rounded-lg bg-primary/10 border border-primary/30 group-hover:bg-primary/20 transition-colors">
-                        <Icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-semibold">{skill.name}</h3>
-                    </div>
-                    {skill.proficiency && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>Proficiency</span>
-                          <span className="font-semibold">
-                            {skill.proficiency}%
-                          </span>
-                        </div>
-                        <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-primary transition-all duration-1000 rounded-full"
-                            style={{ width: `${skill.proficiency}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            <div className="p-6 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10">
+              <LogoLoop
+                icons={skills.map((s) => s.icon_name || "lucide:code")}
+                size={32}
+                speed={24}
+                gap={32}
+              />
             </div>
           </div>
         </div>
@@ -463,7 +377,7 @@ const Home = () => {
                   </p>
                 </div>
                 <Link href="/projects">
-                  <Button variant="outline" className="neon-border">
+                  <Button variant="ghost" className="rounded-full px-5 py-2 h-9 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0">
                     View All
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -477,7 +391,7 @@ const Home = () => {
                   key={project.id}
                   data-aos="fade-up"
                   data-aos-delay={index * 100}
-                  className="glass-card rounded-lg overflow-hidden hover:shadow-glow-md transition-all duration-300 group"
+                  className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group"
                 >
                   {project.thumbnail_url ? (
                     <div className="h-48 overflow-hidden">
@@ -506,7 +420,7 @@ const Home = () => {
                             <Badge
                               key={i}
                               variant="secondary"
-                              className="border border-primary/30 text-xs"
+                              className="bg-white/5 border border-white/10 text-white/80 text-xs px-2.5 py-0.5 rounded-full"
                             >
                               {tech}
                             </Badge>
@@ -514,7 +428,7 @@ const Home = () => {
                           {project.technologies.length > 3 && (
                             <Badge
                               variant="secondary"
-                              className="border border-primary/30 text-xs"
+                              className="bg-white/5 border border-white/10 text-white/80 text-xs px-2.5 py-0.5 rounded-full"
                             >
                               +{project.technologies.length - 3}
                             </Badge>
@@ -531,9 +445,9 @@ const Home = () => {
                           className="flex-1"
                         >
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            className="w-full neon-border"
+                            className="w-full rounded-full h-9 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0"
                           >
                             <Github className="mr-2 h-4 w-4" />
                             Code
@@ -547,7 +461,7 @@ const Home = () => {
                           rel="noopener noreferrer"
                           className="flex-1"
                         >
-                          <Button size="sm" className="w-full btn-glow">
+                          <Button size="sm" className="w-full rounded-full h-9 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50 transition-all duration-300 focus-visible:ring-0">
                             <ExternalLink className="mr-2 h-4 w-4" />
                             Demo
                           </Button>

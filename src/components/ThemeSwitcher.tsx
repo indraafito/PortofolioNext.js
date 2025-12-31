@@ -114,42 +114,52 @@ export const ThemeSwitcher = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="neon-border">
-          <Palette className="h-5 w-5" />
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="rounded-full h-9 w-9 text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300 focus:outline-none focus-visible:ring-0"
+          aria-label="Change theme color"
+        >
+          <Palette className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="glass-card w-56">
-        <DropdownMenuLabel>Choose Theme Color</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent 
+        align="end" 
+        className="w-56 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-2xl p-2"
+      >
+        <DropdownMenuLabel className="text-white/90 px-3 py-2">Choose Theme Color</DropdownMenuLabel>
+        <DropdownMenuSeparator className="bg-white/10" />
         
         {allThemeOptions.map((option) => (
           <DropdownMenuItem
             key={option.value}
             onClick={() => handleSelectTheme(option)}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer rounded-xl px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white transition-colors"
           >
             <div 
-              className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600" 
+              className="w-5 h-5 rounded-full border-2 border-white/20 shadow-lg" 
               style={{ backgroundColor: option.color }}
             />
             <span className="flex-1">{option.name}</span>
-            {currentColor === option.value && <span className="text-sm">✓</span>}
+            {currentColor === option.value && (
+              <span className="text-sm text-primary">✓</span>
+            )}
             {option.isCustom && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemoveCustomColor();
                 }}
-                className="text-xs text-red-500 hover:text-red-700 ml-1 p-1"
+                className="text-red-400 hover:text-red-300 p-1 rounded transition-colors"
                 title="Remove custom color"
               >
-                <Trash2 className="w-3 h-3" />
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
             )}
           </DropdownMenuItem>
         ))}
         
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-white/10" />
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -169,22 +179,22 @@ export const ThemeSwitcher = () => {
                 }
                 setIsDialogOpen(true);
               }}
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer rounded-xl px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>{customColor ? 'Edit Custom Color' : 'Add Custom Color'}</span>
             </DropdownMenuItem>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md bg-black/80 backdrop-blur-2xl border border-white/10 rounded-3xl">
             <DialogHeader>
-              <DialogTitle>{customColor ? 'Edit' : 'Add'} Custom Color</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-white">{customColor ? 'Edit' : 'Add'} Custom Color</DialogTitle>
+              <DialogDescription className="text-white/60">
                 {customColor ? 'Update your custom theme color' : 'Create your own custom theme color'}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <label htmlFor="colorName" className="text-sm font-medium">
+                <label htmlFor="colorName" className="text-sm font-medium text-white/90">
                   Color Name
                 </label>
                 <Input
@@ -197,11 +207,12 @@ export const ThemeSwitcher = () => {
                       handleAddCustomColor();
                     }
                   }}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:border-white/20"
                 />
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="colorPicker" className="text-sm font-medium">
+                <label htmlFor="colorPicker" className="text-sm font-medium text-white/90">
                   Pick Color
                 </label>
                 <div className="flex gap-3 items-center">
@@ -210,21 +221,21 @@ export const ThemeSwitcher = () => {
                     type="color"
                     value={newColorValue}
                     onChange={(e) => handleColorChange(e.target.value)}
-                    className="w-16 h-10 rounded cursor-pointer border border-gray-300"
+                    className="w-16 h-10 rounded-lg cursor-pointer border border-white/10 bg-transparent"
                   />
                   <Input
                     type="text"
                     value={newColorValue}
                     onChange={(e) => handleColorChange(e.target.value)}
                     placeholder="#a78bfa"
-                    className="flex-1"
+                    className="flex-1 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:border-white/20"
                   />
                 </div>
               </div>
               
               <div className="flex gap-2 justify-end pt-4">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => {
                     setIsDialogOpen(false);
                     // Restore previous theme if was previewing
@@ -236,12 +247,14 @@ export const ThemeSwitcher = () => {
                       }
                     }
                   }}
+                  className="rounded-full text-white/70 hover:text-white hover:bg-white/5"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleAddCustomColor}
                   disabled={!newColorName.trim()}
+                  className="rounded-full bg-primary hover:bg-primary/90"
                 >
                   {customColor ? 'Update' : 'Add'} Color
                 </Button>

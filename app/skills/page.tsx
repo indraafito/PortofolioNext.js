@@ -1,8 +1,10 @@
 "use client"; 
-import { useEffect, useState } from 'react';
-import * as LucideIcons from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Icon } from '@iconify/react';
 import { Sparkles } from 'lucide-react';
 import { apiGet } from '@/lib/api';
+import { skillsCatalog, groupLabels, categoryIcons, type CatalogSkill, type SkillGroup } from '@/data/skillsCatalog';
+import { Input } from '@/components/ui/input';
 
 interface Skill {
   id: string;
@@ -16,6 +18,7 @@ interface Skill {
 const Skills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
     fetchSkills();
@@ -32,44 +35,60 @@ const Skills = () => {
     }
   };
 
-  const hardSkills = skills.filter((s) => s.category === 'hard');
-  const softSkills = skills.filter((s) => s.category === 'soft');
+  const catalogByName = useMemo(() => {
+    const map = new Map<string, CatalogSkill>();
+    skillsCatalog.forEach((s) => map.set(s.name.toLowerCase(), s));
+    return map;
+  }, []);
 
-  const getIcon = (iconName: string | null) => {
-    if (!iconName) return LucideIcons.Code;
-    const Icon = (LucideIcons as any)[iconName];
-    return Icon || LucideIcons.Code;
-  };
+  const grouped: Record<SkillGroup, CatalogSkill[]> = useMemo(() => {
+    const result: Record<SkillGroup, CatalogSkill[]> = {
+      'programming-language': [],
+      'framework-library': [],
+      database: [],
+      'cloud-tool': [],
+      design: [],
+      other: [],
+    };
+    skills.forEach((sk) => {
+      const cat = catalogByName.get(sk.name.toLowerCase());
+      if (cat) {
+        result[cat.group].push(cat);
+      } else {
+        result.other.push({ name: sk.name, icon: 'lucide:code', group: 'other' });
+      }
+    });
+    return result;
+  }, [skills, catalogByName]);
 
-  const SkillCard = ({ skill, index }: { skill: Skill; index: number }) => {
-    const Icon = getIcon(skill.icon_name);
-    
+  const filteredGrouped: Record<SkillGroup, CatalogSkill[]> = useMemo(() => {
+    if (!query) return grouped;
+    const q = query.toLowerCase();
+    return {
+      'programming-language': grouped['programming-language'].filter((s) => s.name.toLowerCase().includes(q)),
+      'framework-library': grouped['framework-library'].filter((s) => s.name.toLowerCase().includes(q)),
+      database: grouped['database'].filter((s) => s.name.toLowerCase().includes(q)),
+      'cloud-tool': grouped['cloud-tool'].filter((s) => s.name.toLowerCase().includes(q)),
+      design: grouped['design'].filter((s) => s.name.toLowerCase().includes(q)),
+      other: grouped['other'].filter((s) => s.name.toLowerCase().includes(q)),
+    };
+  }, [grouped, query]);
+
+  const SkillCard = ({ catalogSkill, index }: { catalogSkill: CatalogSkill; index: number }) => {
     return (
       <div
-        className="glass-card p-6 rounded-lg hover:shadow-glow-md transition-all duration-300 animate-fade-in group"
+        className="group relative p-2 rounded-lg transition-all duration-300 hover:scale-110"
+        data-tooltip={catalogSkill.name}
         style={{ animationDelay: `${index * 0.05}s` }}
       >
-        <div className="flex items-center gap-4 mb-3">
-          <div className="p-3 rounded-lg bg-primary/10 border border-primary/30 group-hover:bg-primary/20 transition-colors">
-            <Icon className="h-6 w-6 text-primary" />
-          </div>
-          <h3 className="text-xl font-semibold">{skill.name}</h3>
+        <Icon 
+          icon={catalogSkill.icon} 
+          className="h-10 w-10 text-white/80 group-hover:text-primary transition-colors" 
+        />
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 text-xs font-medium bg-black/90 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+          {catalogSkill.name}
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/90 rotate-45"></div>
         </div>
-        
-        {skill.proficiency && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Proficiency</span>
-              <span className="font-semibold">{skill.proficiency}%</span>
-            </div>
-            <div className="h-2 bg-secondary rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-primary transition-all duration-1000 rounded-full"
-                style={{ width: `${skill.proficiency}%` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -77,98 +96,44 @@ const Skills = () => {
   return (
     <div className="container mx-auto px-4 py-20">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-4 glow-text animate-fade-in">
-          Skills & Expertise
-        </h1>
-        <p className="text-center text-muted-foreground mb-12 text-lg">
-          My technical and soft skills
-        </p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-3 glow-text animate-fade-in">
+            Skills & Tech Stack
+          </h1>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Technologies and tools I'm proficient in
+          </p>
+        </div>
 
         {loading ? (
-  <div className="min-h-[300px] flex items-center justify-center relative">
-
-    {/* Main loading content */}
-    <div className="relative z-10 flex flex-col items-center gap-6">
-
-      {/* Animated logo/spinner */}
-      <div className="relative">
-
-        {/* Outer rotating ring */}
-        <div className="w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-
-        {/* Inner pulsing circle */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-primary/30 animate-pulse" />
-        </div>
-
-        {/* Center sparkle */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Sparkles className="w-8 h-8 text-primary animate-pulse" />
-        </div>
-
-        {/* Glow effect */}
-        <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, hsl(var(--primary) / 0.4), transparent)',
-            filter: 'blur(20px)',
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-          }}
-        />
-      </div>
-
-      {/* Loading text */}
-      <div className="text-center space-y-2">
-        <p className="text-xl font-semibold text-primary animate-pulse">
-          Loading
-          <span className="inline-block animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
-          <span className="inline-block animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
-          <span className="inline-block animate-bounce" style={{ animationDelay: '300ms' }}>.</span>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Just a moment
-        </p>
-      </div>
-
-      {/* Progress bar */}
-      <div className="w-64 h-1 bg-secondary rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-primary rounded-full"
-          style={{
-            animation: 'loading-progress 2s ease-in-out infinite'
-          }}
-        />
-      </div>
-    </div>
-  </div>
-) : (
+          <div className="min-h-[300px] flex items-center justify-center px-4">
+            <div className="text-center">
+              <p className="text-white/80 text-lg font-medium">Loading...</p>
+              <div className="mt-4 h-1 rounded-full overflow-hidden">
+                <div className="h-full bg-white/20 rounded-full" style={{ animation: 'loading-progress 1.8s ease-in-out infinite', width: '30%' }} />
+              </div>
+            </div>
+          </div>
+        ) : (
 
           <div className="space-y-12">
-            {/* Hard Skills */}
-            <div>
-              <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
-                <LucideIcons.Code className="h-8 w-8 text-primary" />
-                Technical Skills
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {hardSkills.map((skill, index) => (
-                  <SkillCard key={skill.id} skill={skill} index={index} />
-                ))}
-              </div>
-            </div>
-
-            {/* Soft Skills */}
-            <div>
-              <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
-                <LucideIcons.Users className="h-8 w-8 text-primary" />
-                Soft Skills
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {softSkills.map((skill, index) => (
-                  <SkillCard key={skill.id} skill={skill} index={index} />
-                ))}
-              </div>
-            </div>
+            {Object.entries(groupLabels).map(([groupKey, label]) => {
+              const list = filteredGrouped[groupKey as SkillGroup];
+              if (!list || list.length === 0) return null;
+              return (
+                <div key={groupKey}>
+                  <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
+                    <Icon icon={categoryIcons[groupKey as SkillGroup]} className="h-8 w-8 text-primary" />
+                    {label}
+                  </h2>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4">
+                    {list.map((cs, index) => (
+                      <SkillCard key={`${cs.name}-${index}`} catalogSkill={cs} index={index} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

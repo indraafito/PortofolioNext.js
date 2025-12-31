@@ -6,6 +6,18 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Plus, Edit, Trash2, X } from 'lucide-react';
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Education {
   id: string;
@@ -24,6 +36,7 @@ const EducationManager = () => {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Education>>({});
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchEducation();
@@ -66,6 +79,7 @@ const EducationManager = () => {
         toast.success('Education added successfully');
       }
       resetForm();
+      setOpen(false);
       fetchEducation();
     } catch (error: any) {
       toast.error(error.message ?? (editingId ? 'Failed to update education' : 'Failed to add education'));
@@ -75,11 +89,10 @@ const EducationManager = () => {
   const handleEdit = (edu: Education) => {
     setEditingId(edu.id);
     setFormData(edu);
+    setOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this education entry?')) return;
-
     try {
       await apiDelete(`/education/${id}`, { auth: true });
       toast.success('Education deleted successfully');
@@ -98,103 +111,127 @@ const EducationManager = () => {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="glass-card p-6 rounded-lg space-y-4">
-        <h3 className="text-xl font-bold flex items-center gap-2">
-          {editingId ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-          {editingId ? 'Edit Education' : 'Add New Education'}
-        </h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-bold">Education</h3>
+        <Button
+          onClick={() => {
+            resetForm();
+            setOpen(true);
+          }}
+          className="btn-glow"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Education
+        </Button>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="institution">Institution *</Label>
-            <Input
-              id="institution"
-              value={formData.institution || ''}
-              onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-              required
-              className="neon-border"
-            />
-          </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Education' : 'Add New Education'}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="institution">Institution *</Label>
+                <Input
+                  id="institution"
+                  value={formData.institution || ''}
+                  onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
+                  required
+                  className="neon-border"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="degree">Degree *</Label>
-            <Input
-              id="degree"
-              value={formData.degree || ''}
-              onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
-              required
-              className="neon-border"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="degree">Degree *</Label>
+                <Input
+                  id="degree"
+                  value={formData.degree || ''}
+                  onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
+                  required
+                  className="neon-border"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="field_of_study">Field of Study</Label>
-            <Input
-              id="field_of_study"
-              value={formData.field_of_study || ''}
-              onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })}
-              className="neon-border"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="field_of_study">Field of Study</Label>
+                <Input
+                  id="field_of_study"
+                  value={formData.field_of_study || ''}
+                  onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })}
+                  className="neon-border"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="start_year">Start Year *</Label>
-            <Input
-              id="start_year"
-              type="number"
-              value={formData.start_year || ''}
-              onChange={(e) => setFormData({ ...formData, start_year: parseInt(e.target.value) })}
-              required
-              className="neon-border"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="start_year">Start Year *</Label>
+                <Input
+                  id="start_year"
+                  type="number"
+                  value={formData.start_year || ''}
+                  onChange={(e) => setFormData({ ...formData, start_year: parseInt(e.target.value) })}
+                  required
+                  className="neon-border"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="end_year">End Year (Leave empty if current)</Label>
-            <Input
-              id="end_year"
-              type="number"
-              value={formData.end_year || ''}
-              onChange={(e) => setFormData({ ...formData, end_year: e.target.value ? parseInt(e.target.value) : null })}
-              className="neon-border"
-            />
-          </div>
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="end_year">End Year (Leave empty if current)</Label>
+                <Input
+                  id="end_year"
+                  type="number"
+                  value={formData.end_year || ''}
+                  onChange={(e) => setFormData({ ...formData, end_year: e.target.value ? parseInt(e.target.value) : null })}
+                  className="neon-border"
+                />
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            value={formData.description || ''}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows={3}
-            className="neon-border"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={3}
+                className="neon-border"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="achievements">Achievements</Label>
-          <Textarea
-            id="achievements"
-            value={formData.achievements || ''}
-            onChange={(e) => setFormData({ ...formData, achievements: e.target.value })}
-            rows={3}
-            className="neon-border"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="achievements">Achievements</Label>
+              <Textarea
+                id="achievements"
+                value={formData.achievements || ''}
+                onChange={(e) => setFormData({ ...formData, achievements: e.target.value })}
+                rows={3}
+                className="neon-border"
+              />
+            </div>
 
-        <div className="flex gap-2">
-          <Button type="submit" className="btn-glow">
-            {editingId ? 'Update' : 'Add'} Education
-          </Button>
-          {editingId && (
-            <Button type="button" variant="outline" onClick={resetForm} className="neon-border">
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
-          )}
-        </div>
-      </form>
+            <div className="flex gap-2">
+              <Button type="submit" className="btn-glow">
+                {editingId ? 'Update' : 'Add'} Education
+              </Button>
+              {editingId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    resetForm();
+                    setOpen(false);
+                  }}
+                  className="neon-border"
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="space-y-4">
         {education.map((edu) => (
@@ -222,13 +259,23 @@ const EducationManager = () => {
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(edu.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Education?</AlertDialogTitle>
+                      <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(edu.id)}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

@@ -4,10 +4,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 type FetchOptions = RequestInit & {
   auth?: boolean;
+  timeoutMs?: number;
 };
 
 async function request<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { auth = false, headers, body, ...rest } = options;
+  const { auth = false, headers, body, timeoutMs = 15000, ...rest } = options;
   const finalHeaders = new Headers(headers);
 
   if (body && !finalHeaders.has("Content-Type") && !(body instanceof FormData)) {
@@ -22,11 +23,25 @@ async function request<T>(path: string, options: FetchOptions = {}): Promise<T> 
     finalHeaders.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...rest,
-    headers: finalHeaders,
-    body: body && !(body instanceof FormData) && typeof body !== "string" ? JSON.stringify(body) : body,
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...rest,
+      signal: controller.signal,
+      headers: finalHeaders,
+      body: body && !(body instanceof FormData) && typeof body !== "string" ? JSON.stringify(body) : body,
+    });
+  } catch (err: any) {
+    clearTimeout(timer);
+    if (err?.name === 'AbortError') {
+      throw new Error('Request timed out');
+    }
+    throw new Error(err?.message ?? 'Network error');
+  }
+  clearTimeout(timer);
 
   if (!response.ok) {
     let message = "Request failed";

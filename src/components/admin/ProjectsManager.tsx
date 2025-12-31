@@ -6,6 +6,18 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Plus, Edit, Trash2, X } from 'lucide-react';
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Project {
   id: string;
@@ -26,6 +38,7 @@ const ProjectsManager = () => {
     technologies: [],
   });
   const [techInput, setTechInput] = useState('');
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -67,6 +80,7 @@ const ProjectsManager = () => {
         toast.success('Project added successfully');
       }
       resetForm();
+      setOpen(false);
       fetchProjects();
     } catch (error: any) {
       toast.error(error.message ?? (editingId ? 'Failed to update project' : 'Failed to add project'));
@@ -76,11 +90,10 @@ const ProjectsManager = () => {
   const handleEdit = (project: Project) => {
     setEditingId(project.id);
     setFormData(project);
+    setOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this project?')) return;
-
     try {
       await apiDelete(`/projects/${id}`, { auth: true });
       toast.success('Project deleted successfully');
@@ -117,117 +130,141 @@ const ProjectsManager = () => {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="glass-card p-6 rounded-lg space-y-4">
-        <h3 className="text-xl font-bold flex items-center gap-2">
-          {editingId ? <Edit className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-          {editingId ? 'Edit Project' : 'Add New Project'}
-        </h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-bold">Projects</h3>
+        <Button
+          onClick={() => {
+            resetForm();
+            setOpen(true);
+          }}
+          className="btn-glow"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Project
+        </Button>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Project Title *</Label>
-            <Input
-              id="title"
-              value={formData.title || ''}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              required
-              className="neon-border"
-            />
-          </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Project' : 'Add New Project'}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Project Title *</Label>
+                <Input
+                  id="title"
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  required
+                  className="neon-border"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="thumbnail_url">Thumbnail URL</Label>
-            <Input
-              id="thumbnail_url"
-              value={formData.thumbnail_url || ''}
-              onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
-              placeholder="https://..."
-              className="neon-border"
-            />
-          </div>
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="thumbnail_url">Thumbnail URL</Label>
+                <Input
+                  id="thumbnail_url"
+                  value={formData.thumbnail_url || ''}
+                  onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
+                  placeholder="https://..."
+                  className="neon-border"
+                />
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="description">Description *</Label>
-          <Textarea
-            id="description"
-            value={formData.description || ''}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            required
-            rows={3}
-            className="neon-border"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description *</Label>
+              <Textarea
+                id="description"
+                value={formData.description || ''}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+                rows={3}
+                className="neon-border"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label>Technologies</Label>
-          <div className="flex gap-2">
-            <Input
-              value={techInput}
-              onChange={(e) => setTechInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
-              placeholder="Add a technology"
-              className="neon-border"
-            />
-            <Button type="button" onClick={addTechnology} variant="outline" className="neon-border">
-              Add
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {formData.technologies?.map((tech, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-sm flex items-center gap-2"
-              >
-                {tech}
-                <button
+            <div className="space-y-2">
+              <Label>Technologies</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={techInput}
+                  onChange={(e) => setTechInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
+                  placeholder="Add a technology"
+                  className="neon-border"
+                />
+                <Button type="button" onClick={addTechnology} variant="outline" className="neon-border">
+                  Add
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.technologies?.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-sm flex items-center gap-2"
+                  >
+                    {tech}
+                    <button
+                      type="button"
+                      onClick={() => removeTechnology(index)}
+                      className="hover:text-destructive"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="github_url">GitHub URL</Label>
+                <Input
+                  id="github_url"
+                  value={formData.github_url || ''}
+                  onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+                  placeholder="https://github.com/..."
+                  className="neon-border"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="live_url">Live URL</Label>
+                <Input
+                  id="live_url"
+                  value={formData.live_url || ''}
+                  onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
+                  placeholder="https://..."
+                  className="neon-border"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button type="submit" className="btn-glow">
+                {editingId ? 'Update' : 'Add'} Project
+              </Button>
+              {editingId && (
+                <Button
                   type="button"
-                  onClick={() => removeTechnology(index)}
-                  className="hover:text-destructive"
+                  variant="outline"
+                  onClick={() => {
+                    resetForm();
+                    setOpen(false);
+                  }}
+                  className="neon-border"
                 >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="github_url">GitHub URL</Label>
-            <Input
-              id="github_url"
-              value={formData.github_url || ''}
-              onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-              placeholder="https://github.com/..."
-              className="neon-border"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="live_url">Live URL</Label>
-            <Input
-              id="live_url"
-              value={formData.live_url || ''}
-              onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
-              placeholder="https://..."
-              className="neon-border"
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-2">
-          <Button type="submit" className="btn-glow">
-            {editingId ? 'Update' : 'Add'} Project
-          </Button>
-          {editingId && (
-            <Button type="button" variant="outline" onClick={resetForm} className="neon-border">
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
-          )}
-        </div>
-      </form>
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="space-y-4">
         {projects.map((project) => (
@@ -260,13 +297,23 @@ const ProjectsManager = () => {
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(project.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Project?</AlertDialogTitle>
+                      <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(project.id)}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

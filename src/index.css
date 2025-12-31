@@ -160,6 +160,39 @@ All colors MUST be HSL.
                  0 0 30px hsl(var(--primary) / 0.2);
   }
 
+  .logo-loop {
+    @apply relative overflow-hidden w-full;
+  }
+
+  .logo-loop--fade::before,
+  .logo-loop--fade::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 64px;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(to right, hsl(var(--background)) 0%, transparent 100%);
+  }
+
+  .logo-loop--fade::before { left: 0; }
+  .logo-loop--fade::after {
+    right: 0;
+    transform: scaleX(-1);
+  }
+
+  .logo-loop-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation-name: logo-scroll;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+    padding: 8px 0;
+  }
+
   /* Smooth Scroll */
   html {
     scroll-behavior: smooth;
@@ -442,6 +475,17 @@ All colors MUST be HSL.
   }
 }
 
+@keyframes loading-progress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes logo-scroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
 @keyframes fireGlowShift {
   0% {
     transform: scale(1.2) translateY(0px) translateX(0px);
@@ -469,4 +513,3 @@ All colors MUST be HSL.
     animation: fireGlowShift 4s ease-in-out infinite;
   }
 }
-

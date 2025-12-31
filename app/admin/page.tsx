@@ -1,6 +1,6 @@
 "use client"; 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // ← Ubah dari 'next/router' ke 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import EducationManager from '@/components/admin/EducationManager';
@@ -10,11 +10,12 @@ import MessagesManager from '@/components/admin/MessagesManager';
 import ProfileManager from '@/components/admin/ProfileManager';
 import { apiGet } from '@/lib/api';
 import { clearAuthToken, getAuthToken } from '@/lib/auth';
+import { UserCircle, GraduationCap, Award, Briefcase, Mail } from 'lucide-react';
 
 const Admin = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // Sekarang menggunakan router dari next/navigation
+  const router = useRouter();
 
   useEffect(() => {
     checkAuth();
@@ -61,21 +62,46 @@ const Admin = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Admin Tabs */}
         <Tabs defaultValue="profile" className="w-full pt-10">
-          <TabsList className="bg-card border border-border w-full justify-start h-auto p-1 rounded-lg mb-6">
-            <TabsTrigger value="profile" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Profile
+          <TabsList className="w-full max-w-5xl mx-auto h-auto p-2 rounded-full mb-8 sticky top-24 z-40 bg-black/40 backdrop-blur-xl border border-white/5 overflow-x-auto flex justify-center gap-1">
+            <TabsTrigger
+              value="profile"
+              className="inline-flex items-center gap-2 px-5 py-2 h-9 rounded-full text-[15px] font-normal transition-all duration-300 text-white/80 hover:text-white hover:bg-white/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 min-w-[120px] justify-center focus-visible:ring-0"
+              title="Profile"
+            >
+              <UserCircle className="h-4 w-4" />
+              <span>Profile</span>
             </TabsTrigger>
-            <TabsTrigger value="education" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Education
+            <TabsTrigger
+              value="education"
+              className="inline-flex items-center gap-2 px-5 py-2 h-9 rounded-full text-[15px] font-normal transition-all duration-300 text-white/80 hover:text-white hover:bg-white/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 min-w-[120px] justify-center focus-visible:ring-0"
+              title="Education"
+            >
+              <GraduationCap className="h-4 w-4" />
+              <span>Education</span>
             </TabsTrigger>
-            <TabsTrigger value="skills" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Skills
+            <TabsTrigger
+              value="skills"
+              className="inline-flex items-center gap-2 px-5 py-2 h-9 rounded-full text-[15px] font-normal transition-all duration-300 text-white/80 hover:text-white hover:bg-white/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 min-w-[120px] justify-center focus-visible:ring-0"
+              title="Skills"
+            >
+              <Award className="h-4 w-4" />
+              <span>Skills</span>
             </TabsTrigger>
-            <TabsTrigger value="projects" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Projects
+            <TabsTrigger
+              value="projects"
+              className="inline-flex items-center gap-2 px-5 py-2 h-9 rounded-full text-[15px] font-normal transition-all duration-300 text-white/80 hover:text-white hover:bg-white/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 min-w-[120px] justify-center focus-visible:ring-0"
+              title="Projects"
+            >
+              <Briefcase className="h-4 w-4" />
+              <span>Projects</span>
             </TabsTrigger>
-            <TabsTrigger value="messages" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Messages
+            <TabsTrigger
+              value="messages"
+              className="inline-flex items-center gap-2 px-5 py-2 h-9 rounded-full text-[15px] font-normal transition-all duration-300 text-white/80 hover:text-white hover:bg-white/5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 min-w-[120px] justify-center focus-visible:ring-0"
+              title="Messages"
+            >
+              <Mail className="h-4 w-4" />
+              <span>Messages</span>
             </TabsTrigger>
           </TabsList>
 

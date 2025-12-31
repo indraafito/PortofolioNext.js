@@ -4,6 +4,17 @@ import { toast } from 'sonner';
 import { Trash2, Mail, MailOpen } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { apiDelete, apiGet, apiPatch } from '@/lib/api';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Message {
   id: string;
@@ -36,6 +47,7 @@ const MessagesManager = () => {
   const toggleRead = async (id: string, currentReadStatus: boolean) => {
     try {
       await apiPatch(`/contact-messages/${id}/read`, { read: !currentReadStatus }, { auth: true });
+      toast.success(!currentReadStatus ? 'Message marked as read' : 'Message marked as unread');
       fetchMessages();
     } catch (error: any) {
       toast.error(error.message ?? 'Failed to update message status');
@@ -43,8 +55,6 @@ const MessagesManager = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this message?')) return;
-
     try {
       await apiDelete(`/contact-messages/${id}`, { auth: true });
       toast.success('Message deleted successfully');
@@ -94,13 +104,23 @@ const MessagesManager = () => {
                 >
                   {msg.read ? 'Mark Unread' : 'Mark Read'}
                 </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(msg.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Message?</AlertDialogTitle>
+                      <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(msg.id)}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

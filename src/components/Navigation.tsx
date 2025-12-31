@@ -25,8 +25,9 @@ const navItems = [
   { name: "Skills", path: "/skills", icon: Award },
   { name: "Projects", path: "/projects", icon: Briefcase },
   { name: "Contact", path: "/contact", icon: Mail },
-  { name: "Admin", path: "/admin", icon: Shield },
 ];
+
+const adminNavItem = { name: "Admin", path: "/admin", icon: Shield };
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -84,7 +85,6 @@ export const Navigation = () => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.path;
-              const isAdminItem = item.name === "Admin";
               return (
                 <Link key={item.path} href={item.path}>
                   <Button
@@ -103,6 +103,23 @@ export const Navigation = () => {
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link key={adminNavItem.path} href={adminNavItem.path}>
+                <Button
+                  variant="ghost"
+                  aria-current={pathname === adminNavItem.path ? "page" : undefined}
+                  className={`relative overflow-hidden transition-all duration-300 rounded-full px-5 py-2 h-9 text-[15px] font-normal focus:outline-none focus-visible:ring-0 ${
+                    pathname === adminNavItem.path 
+                      ? "bg-white/10 text-white hover:bg-white/15" 
+                      : "text-white/80 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span className="relative z-10">
+                    {adminNavItem.name}
+                  </span>
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Theme Switcher + Logout (desktop) */}
@@ -166,6 +183,21 @@ export const Navigation = () => {
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link key={adminNavItem.path} href={adminNavItem.path}>
+                <Button
+                  variant="ghost"
+                  aria-current={pathname === adminNavItem.path ? "page" : undefined}
+                  className="w-full justify-start relative overflow-hidden rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/60 text-white/70 hover:text-white hover:bg-white/5 border border-primary/30 text-primary hover:bg-primary/10"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="relative z-10 flex items-center gap-3">
+                    <adminNavItem.icon className="h-5 w-5" />
+                    {adminNavItem.name}
+                  </span>
+                </Button>
+              </Link>
+            )}
             {isAdmin && (
               <Button
                 variant="ghost"

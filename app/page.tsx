@@ -13,6 +13,7 @@ import {
   Code,
   ExternalLink,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 import { apiGet } from "@/lib/api";
 import AOS from "aos";
 import { LogoLoop } from "@/components/LogoLoop";

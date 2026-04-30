@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     url: 'https://afito-indra.vercel.app',
     siteName: 'Afito Indra Permana Portfolio',
     title: 'Afito Indra Permana | Front-End Developer',
-    description: 'Front-End Developer spesialis React & Next.js berbasis di Surabaya.',
+    description: 'Mahasiswa S1 Teknik Informatika Universitas Negeri Malang, fokus pada Frontend Developer dan UI/UX Design, serta penerima Beasiswa Bank Indonesia 2025.',
     images: [
       {
         url: '/og-image.jpg',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Afito Indra Permana | Front-End Developer',
-    description: 'Front-End Developer spesialis React & Next.js berbasis di Surabaya.',
+    description: 'Mahasiswa S1 Teknik Informatika Universitas Negeri Malang, fokus pada Frontend Developer dan UI/UX Design, serta penerima Beasiswa Bank Indonesia 2025.',
     images: ['/og-image.jpg'],
   },
   robots: {

@@ -1,10 +1,9 @@
 "use client"; 
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '@iconify/react';
-import { Sparkles } from 'lucide-react';
+
 import { apiGet } from '@/lib/api';
 import { skillsCatalog, groupLabels, categoryIcons, type CatalogSkill, type SkillGroup } from '@/data/skillsCatalog';
-import { Input } from '@/components/ui/input';
 
 interface Skill {
   id: string;
@@ -18,7 +17,7 @@ interface Skill {
 const Skills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState<string>("");
+  const [query] = useState<string>("");
 
   useEffect(() => {
     fetchSkills();

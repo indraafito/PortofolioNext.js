@@ -20,7 +20,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { useTheme } from '@/contexts/ThemeContext';
 
-const defaultThemeOptions = [
+interface CustomColor {
+  name: string;
+  value: string;
+  color: string;
+  isCustom?: boolean;
+}
+
+const defaultThemeOptions: CustomColor[] = [
   { name: 'Purple', value: 'purple', color: '#a78bfa' },
   { name: 'Blue', value: 'blue', color: '#60a5fa' },
   { name: 'Pink', value: 'pink', color: '#f472b6' },
@@ -33,11 +40,10 @@ const defaultThemeOptions = [
 
 export const ThemeSwitcher = () => {
   const { currentColor, changeTheme } = useTheme();
-  const [customColor, setCustomColor] = useState(null);
+  const [customColor, setCustomColor] = useState<CustomColor | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newColorName, setNewColorName] = useState('');
   const [newColorValue, setNewColorValue] = useState('#a78bfa');
-  const [previewColor, setPreviewColor] = useState('#a78bfa');
 
   // Load custom color from localStorage
   useEffect(() => {
@@ -52,7 +58,7 @@ export const ThemeSwitcher = () => {
   }, []);
 
   // Save custom color to localStorage
-  const saveCustomColor = (color) => {
+  const saveCustomColor = (color: CustomColor | null) => {
     setCustomColor(color);
     if (color) {
       localStorage.setItem('portfolio-custom-color', JSON.stringify(color));
@@ -61,49 +67,47 @@ export const ThemeSwitcher = () => {
     }
   };
 
-  const allThemeOptions = customColor 
+  const allThemeOptions = customColor
     ? [...defaultThemeOptions, customColor]
     : defaultThemeOptions;
 
   const handleAddCustomColor = () => {
     if (newColorName.trim()) {
       const customColorId = 'custom';
-      const newColor = {
+      const newColor: CustomColor = {
         name: newColorName.trim(),
         value: customColorId,
         color: newColorValue,
         isCustom: true,
       };
-      
+
       saveCustomColor(newColor);
       changeTheme(customColorId, newColorValue);
-      
+
       // Reset form
       setNewColorName('');
       setNewColorValue('#a78bfa');
-      setPreviewColor('#a78bfa');
       setIsDialogOpen(false);
     }
   };
 
   const handleRemoveCustomColor = () => {
     saveCustomColor(null);
-    
+
     if (currentColor === 'custom') {
       changeTheme('purple');
     }
   };
 
   // Live preview while dragging color picker
-  const handleColorChange = (newColor) => {
+  const handleColorChange = (newColor: string) => {
     setNewColorValue(newColor);
-    setPreviewColor(newColor);
-    
+
     // Apply live preview to theme
     changeTheme('preview', newColor);
   };
 
-  const handleSelectTheme = (option) => {
+  const handleSelectTheme = (option: CustomColor) => {
     if (option.isCustom) {
       changeTheme(option.value, option.color);
     } else {
@@ -114,8 +118,8 @@ export const ThemeSwitcher = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="icon"
           className="rounded-lg h-9 w-9 text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300 focus:outline-none focus-visible:ring-0"
           aria-label="Change theme color"
@@ -123,21 +127,21 @@ export const ThemeSwitcher = () => {
           <Palette className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        align="end" 
+      <DropdownMenuContent
+        align="end"
         className="w-56 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-2xl p-2"
       >
         <DropdownMenuLabel className="text-white/90 px-3 py-2">Choose Theme Color</DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-white/10" />
-        
+
         {allThemeOptions.map((option) => (
           <DropdownMenuItem
             key={option.value}
             onClick={() => handleSelectTheme(option)}
             className="flex items-center gap-3 cursor-pointer rounded-xl px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/5 focus:bg-white/5 focus:text-white transition-colors"
           >
-            <div 
-              className="w-5 h-5 rounded-full border-2 border-white/20 shadow-lg" 
+            <div
+              className="w-5 h-5 rounded-full border-2 border-white/20 shadow-lg"
               style={{ backgroundColor: option.color }}
             />
             <span className="flex-1">{option.name}</span>
@@ -158,24 +162,20 @@ export const ThemeSwitcher = () => {
             )}
           </DropdownMenuItem>
         ))}
-        
+
         <DropdownMenuSeparator className="bg-white/10" />
-        
+
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault();
                 if (customColor) {
-                  // Edit existing custom color
                   setNewColorName(customColor.name);
                   setNewColorValue(customColor.color);
-                  setPreviewColor(customColor.color);
                 } else {
-                  // Create new custom color
                   setNewColorName('');
                   setNewColorValue('#a78bfa');
-                  setPreviewColor('#a78bfa');
                 }
                 setIsDialogOpen(true);
               }}
@@ -210,7 +210,7 @@ export const ThemeSwitcher = () => {
                   className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:border-white/20"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="colorPicker" className="text-sm font-medium text-white/90">
                   Pick Color
@@ -232,13 +232,12 @@ export const ThemeSwitcher = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="flex gap-2 justify-end pt-4">
                 <Button
                   variant="ghost"
                   onClick={() => {
                     setIsDialogOpen(false);
-                    // Restore previous theme if was previewing
                     if (currentColor !== 'preview') {
                       if (customColor && currentColor === 'custom') {
                         changeTheme('custom', customColor.color);

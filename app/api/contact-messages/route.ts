@@ -11,7 +11,7 @@ const contactSchema = z.object({
 })
 
 export async function GET(req: NextRequest) {
-  return authenticate(async (req: NextRequest) => {
+  return authenticate(async () => {
     try {
       const { rows } = await query(
         'SELECT * FROM contact_messages ORDER BY created_at DESC',

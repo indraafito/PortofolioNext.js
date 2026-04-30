@@ -41,12 +41,6 @@ const Admin = () => {
     }
   };
 
-  const handleLogout = async () => {
-    clearAuthToken();
-    toast.success('Logged out successfully');
-    router.push('/');
-  };
-
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">

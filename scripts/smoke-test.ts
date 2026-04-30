@@ -41,7 +41,7 @@ async function main() {
     if (!token) throw new Error('no token returned')
   })
 
-  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {}
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {}
 
   let newSkillId: string | null = null
   await step('Create skill', async () => {

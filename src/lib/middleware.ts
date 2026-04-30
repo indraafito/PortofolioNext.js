@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 // Validate JWT secret is available
 if (!JWT_SECRET) {
@@ -40,7 +40,7 @@ export function authenticate(
     const token = authHeader.slice('Bearer '.length);
 
     try {
-      const payload = jwt.verify(token, JWT_SECRET) as { email: string };
+      const payload = jwt.verify(token, JWT_SECRET) as unknown as { email: string };
       
       // Attach user to request (for reference in handlers)
       (req as any).user = payload;

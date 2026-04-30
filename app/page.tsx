@@ -13,7 +13,6 @@ import {
   Code,
   ExternalLink,
 } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeContext";
 import { apiGet } from "@/lib/api";
 import AOS from "aos";
 import { LogoLoop } from "@/components/LogoLoop";
@@ -51,7 +50,7 @@ const Home = () => {
   const [education, setEducation] = useState<Education[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const { currentColor } = useTheme();
+
   const textRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

@@ -18,7 +18,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
-  return authenticate(async (req: NextRequest) => {
+  return authenticate(async () => {
     try {
       const body = await req.json()
       const parsed = projectSchema.partial().safeParse(body)
@@ -70,7 +70,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
-  return authenticate(async (req: NextRequest) => {
+  return authenticate(async () => {
     try {
       const { rows } = await query(
         'DELETE FROM projects WHERE id = $1 RETURNING id',

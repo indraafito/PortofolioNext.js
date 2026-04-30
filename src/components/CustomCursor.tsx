@@ -1,11 +1,9 @@
 "use client"; 
-import { useEffect, useRef, useState } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useEffect, useRef, useState } from "react"
 
 type Point = { x: number; y: number };
 
 const CustomCursor = () => {
-  const { currentColor } = useTheme();
 
   const [isMobile, setIsMobile] = useState(false);
 

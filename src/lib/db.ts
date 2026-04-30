@@ -12,10 +12,12 @@ let pool: Pool | null = null;
 
 export function getPool(): Pool {
   if (!pool) {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
     pool = new Pool({
       connectionString: DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
+      ssl: isDevelopment ? false : {
+        rejectUnauthorized: true,
       },
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,

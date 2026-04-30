@@ -90,7 +90,7 @@ export const Navigation = () => {
                   <Button
                     variant="ghost"
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative overflow-hidden transition-all duration-300 rounded-full px-5 py-2 h-9 text-[15px] font-normal focus:outline-none focus-visible:ring-0 ${
+                    className={`relative overflow-hidden transition-all duration-300 rounded-lg px-5 py-2 h-9 text-[15px] font-normal focus:outline-none focus-visible:ring-0 ${
                       isActive 
                         ? "bg-white/10 text-white hover:bg-white/15" 
                         : "text-white/80 hover:text-white hover:bg-white/5"
@@ -108,7 +108,7 @@ export const Navigation = () => {
                 <Button
                   variant="ghost"
                   aria-current={pathname === adminNavItem.path ? "page" : undefined}
-                  className={`relative overflow-hidden transition-all duration-300 rounded-full px-5 py-2 h-9 text-[15px] font-normal focus:outline-none focus-visible:ring-0 ${
+                  className={`relative overflow-hidden transition-all duration-300 rounded-lg px-5 py-2 h-9 text-[15px] font-normal focus:outline-none focus-visible:ring-0 ${
                     pathname === adminNavItem.path 
                       ? "bg-white/10 text-white hover:bg-white/15" 
                       : "text-white/80 hover:text-white hover:bg-white/5"
@@ -129,7 +129,7 @@ export const Navigation = () => {
               <Button
                 variant="ghost"
                 onClick={handleLogout}
-                className="relative overflow-hidden rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300"
+                className="relative overflow-hidden rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
@@ -148,7 +148,7 @@ export const Navigation = () => {
               aria-label="Toggle navigation"
               aria-controls="mobile-navigation"
               aria-expanded={isOpen}
-              className="text-white/70 hover:text-white hover:bg-white/5"
+              className="rounded-lg text-white/70 hover:text-white hover:bg-white/5"
             >
               {isOpen ? <X /> : <Menu />}
             </Button>

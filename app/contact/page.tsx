@@ -49,20 +49,22 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-20">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-4 glow-text animate-fade-in">
-          Get In Touch
-        </h1>
-        <p className="text-center text-muted-foreground mb-12 text-lg">
-          Have a project in mind? Let's talk!
-        </p>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-18">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-5xl font-bold text-center mb-4 glow-text animate-fade-in">
+            Contact Me
+          </h1>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Let's connect and discuss opportunities
+          </p>
 
-        {submitted ? (
-          <div className="glass-card p-12 rounded-lg text-center animate-fade-in">
-            <CheckCircle className="h-16 w-16 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Message Sent!</h2>
-            <p className="text-muted-foreground mb-6">
+          {submitted ? (
+            <div className="glass-card p-12 rounded-lg text-center animate-fade-in">
+              <CheckCircle className="h-16 w-16 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Message Sent!</h2>
+              <p className="text-muted-foreground mb-6">
+                Thank you for reaching out. I'll get back to you soon!
               Thank you for reaching out. I'll get back to you soon!
             </p>
             <Button onClick={() => setSubmitted(false)} className="btn-glow">
@@ -144,6 +146,7 @@ const Contact = () => {
           </a>
         </div>
       </div>
+    </div>
     </div>
   );
 };

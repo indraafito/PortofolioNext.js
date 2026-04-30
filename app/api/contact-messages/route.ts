@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 import { authenticate, corsHeaders } from '@/lib/middleware'
 import { z } from 'zod'
+import { contactRateLimit, getClientIdentifier } from '@/lib/rate-limit'
 
 const contactSchema = z.object({
   name: z.string().min(1).max(100),
@@ -27,6 +28,26 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientId = getClientIdentifier(req);
+    const rateLimitResult = contactRateLimit(clientId);
+    
+    if (!rateLimitResult.success) {
+      const resetTime = Math.ceil((rateLimitResult.resetTime! - Date.now()) / 1000 / 60);
+      return NextResponse.json(
+        { 
+          message: `Too many contact form submissions. Try again in ${resetTime} minutes.` 
+        },
+        { 
+          status: 429,
+          headers: {
+            ...corsHeaders(),
+            'Retry-After': resetTime.toString(),
+          }
+        }
+      );
+    }
+
     const body = await req.json()
     const parsed = contactSchema.safeParse(body)
     if (!parsed.success) {

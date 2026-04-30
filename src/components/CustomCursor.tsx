@@ -1,5 +1,5 @@
 "use client"; 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 type Point = { x: number; y: number };
@@ -7,17 +7,26 @@ type Point = { x: number; y: number };
 const CustomCursor = () => {
   const { currentColor } = useTheme();
 
-  // Number of tail dots (excluding the primary dot)
+  const [isMobile, setIsMobile] = useState(false);
+
+  // --- Pindahkan semua hooks di sini ---
   const TAIL_COUNT = 10;
-
-  // Refs for DOM nodes of dots (0 is primary dot, 1..N are tail)
   const dotsRef = useRef<Array<HTMLDivElement | null>>([]);
-
-  // Positions used by the animation loop
   const positionsRef = useRef<Point[]>(Array.from({ length: TAIL_COUNT + 1 }, () => ({ x: -100, y: -100 })));
   const targetRef = useRef<Point>({ x: -100, y: -100 });
 
-  // setup mouse listener
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        window.innerWidth <= 768;
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       targetRef.current.x = e.clientX;
@@ -28,7 +37,6 @@ const CustomCursor = () => {
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
-  // animation loop
   useEffect(() => {
     let raf = 0;
 
@@ -36,26 +44,22 @@ const CustomCursor = () => {
       const positions = positionsRef.current;
       const target = targetRef.current;
 
-      // First dot chases the target quickly
       positions[0].x += (target.x - positions[0].x) * 0.25;
       positions[0].y += (target.y - positions[0].y) * 0.25;
 
-      // Each subsequent dot chases the previous one with slightly softer easing
       for (let i = 1; i <= TAIL_COUNT; i++) {
         const prev = positions[i - 1];
         positions[i].x += (prev.x - positions[i].x) * (0.16 + i * 0.01);
         positions[i].y += (prev.y - positions[i].y) * (0.16 + i * 0.01);
       }
 
-      // Apply styles to DOM nodes
       for (let i = 0; i <= TAIL_COUNT; i++) {
         const el = dotsRef.current[i];
         if (!el) continue;
         const p = positions[i];
-        const scale = 1 - i * 0.06; // gradually smaller
+        const scale = 1 - i * 0.06;
         const opacity = Math.max(0, 1 - i * 0.09);
 
-        // Use translate3d for better performance
         el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) translate(-50%, -50%) scale(${scale})`;
         el.style.opacity = `${opacity}`;
       }
@@ -67,17 +71,20 @@ const CustomCursor = () => {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // helper to set refs from map
   const setDotRef = (el: HTMLDivElement | null, idx: number) => {
     dotsRef.current[idx] = el;
   };
 
+  // --- Setelah semua hooks, baru cek isMobile ---
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <>
       {Array.from({ length: TAIL_COUNT + 1 }).map((_, i) => {
-        // primary dot is index 0 (slightly brighter), tail are 1..N
         const size = i === 0 ? 8 : Math.max(4, 8 - i);
-        const z = 9999 - i; // primary on top
+        const z = 9999 - i;
         const blur = i === 0 ? 8 : 4 + Math.round(i / 2);
 
         return (

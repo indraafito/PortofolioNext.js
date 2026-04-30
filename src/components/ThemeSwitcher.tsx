@@ -117,7 +117,7 @@ export const ThemeSwitcher = () => {
         <Button 
           variant="ghost" 
           size="icon"
-          className="rounded-full h-9 w-9 text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300 focus:outline-none focus-visible:ring-0"
+          className="rounded-lg h-9 w-9 text-white/70 hover:text-white hover:bg-white/5 transition-all duration-300 focus:outline-none focus-visible:ring-0"
           aria-label="Change theme color"
         >
           <Palette className="h-4 w-4" />

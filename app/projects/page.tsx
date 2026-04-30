@@ -5,6 +5,7 @@ import { Github, ExternalLink, Code, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { apiGet } from "@/lib/api";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface Project {
   id: string;
@@ -37,23 +38,19 @@ const Projects = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-20">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-4 glow-text animate-fade-in">
-          Projects
-        </h1>
-        <p className="text-center text-muted-foreground mb-12 text-lg">
-          Showcasing my work and achievements
-        </p>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-18">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-5xl font-bold text-center mb-4 glow-text animate-fade-in">
+            Projects
+          </h1>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Showcasing my work and achievements
+          </p>
 
         {loading ? (
-          <div className="min-h-[300px] flex items-center justify-center px-4">
-            <div className="text-center">
-              <p className="text-white/80 text-lg font-medium">Loading...</p>
-              <div className="mt-4 h-1 rounded-full overflow-hidden">
-                <div className="h-full bg-white/20 rounded-full" style={{ animation: 'loading-progress 1.8s ease-in-out infinite', width: '30%' }} />
-              </div>
-            </div>
+          <div className="min-h-[300px] flex items-center justify-center">
+            <LoadingSpinner size="md" text="Loading projects..." />
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center text-muted-foreground glass-card p-12 rounded-lg">
@@ -140,6 +137,7 @@ const Projects = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

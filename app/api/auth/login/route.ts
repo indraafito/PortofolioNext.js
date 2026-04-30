@@ -1,31 +1,60 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
+import { loginRateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { createSecureResponse } from '@/lib/security-headers'
 
 const authLoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
 })
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-me'
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+// Validate required environment variables
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD environment variables are required');
+}
 
 export async function POST(req: NextRequest) {
   try {
+    // Apply rate limiting
+    const clientId = getClientIdentifier(req);
+    const rateLimitResult = loginRateLimit(clientId);
+    
+    if (!rateLimitResult.success) {
+      const resetTime = Math.ceil((rateLimitResult.resetTime! - Date.now()) / 1000 / 60);
+      return createSecureResponse(
+        { 
+          message: `Too many login attempts. Try again in ${resetTime} minutes.` 
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': resetTime.toString(),
+          }
+        }
+      );
+    }
+
     const body = await req.json()
     const parsed = authLoginSchema.safeParse(body)
     if (!parsed.success) {
-      return NextResponse.json({ message: parsed.error.errors[0]?.message ?? 'Invalid payload' }, { status: 400 })
+      return createSecureResponse({ message: parsed.error.errors[0]?.message ?? 'Invalid payload' }, { status: 400 })
     }
     const { email, password } = parsed.data
     if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-      return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
+      return createSecureResponse({ message: 'Invalid credentials' }, { status: 401 })
     }
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '12h' })
-    return NextResponse.json({ token })
+    return createSecureResponse({ token })
   } catch (error) {
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    return createSecureResponse({ message: 'Internal server error' }, { status: 500 })
   }
 }
 

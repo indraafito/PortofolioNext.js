@@ -1,6 +1,6 @@
 "use client"; 
 import { useEffect, useState } from "react";
-import { GraduationCap, Calendar, Award, Sparkles } from "lucide-react";
+import { GraduationCap, Calendar, Award } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 

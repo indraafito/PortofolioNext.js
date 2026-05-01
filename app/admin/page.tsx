@@ -11,6 +11,7 @@ import ProfileManager from '@/components/admin/ProfileManager';
 import { apiGet } from '@/lib/api';
 import { clearAuthToken, getAuthToken } from '@/lib/auth';
 import { UserCircle, GraduationCap, Award, Briefcase, Mail } from 'lucide-react';
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 const Admin = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -44,7 +45,7 @@ const Admin = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
-        <p className="text-muted-foreground">Verifying admin access...</p>
+        <LoadingSpinner size="md" text="Verifying admin access..." />
       </div>
     );
   }

@@ -1,10 +1,11 @@
-import '../src/App.css';
+﻿import '../src/App.css';
 import '../src/index.css';
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { Navigation } from '@/components/Navigation';
 import CustomCursor from '@/components/CustomCursor';
 import { Toaster } from '@/components/ui/sonner';
+import ScrollToTop from '@/contexts/ScrollToTop';
 
 export const metadata: Metadata = {
   title: {
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <ThemeProvider>
           <Navigation />
+          <ScrollToTop />
           <main className="pt-12">
             {children}
           </main>

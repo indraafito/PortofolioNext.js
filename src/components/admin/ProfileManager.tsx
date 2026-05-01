@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Save } from 'lucide-react';
 import { apiGet, apiPut } from '@/lib/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface Profile {
   id: string;
@@ -58,7 +59,7 @@ const ProfileManager = () => {
     }
   };
 
-  if (loading) return <div className="text-muted-foreground">Loading...</div>;
+  if (loading) return (<div className="min-h-[180px] flex items-center justify-center"><LoadingSpinner size="md" text="Loading..." /></div>);
   if (!profile) return <div className="text-muted-foreground">Profile not found</div>;
 
   return (

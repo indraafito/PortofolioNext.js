@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '@iconify/react';
 
 import { apiGet } from '@/lib/api';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { skillsCatalog, groupLabels, categoryIcons, type CatalogSkill, type SkillGroup } from '@/data/skillsCatalog';
 
 interface Skill {
@@ -106,12 +107,7 @@ const Skills = () => {
 
         {loading ? (
           <div className="min-h-[300px] flex items-center justify-center px-4">
-            <div className="text-center">
-              <p className="text-white/80 text-lg font-medium">Loading...</p>
-              <div className="mt-4 h-1 rounded-full overflow-hidden">
-                <div className="h-full bg-white/20 rounded-full" style={{ animation: 'loading-progress 1.8s ease-in-out infinite', width: '30%' }} />
-              </div>
-            </div>
+            <LoadingSpinner size="md" text="Loading skills..." />
           </div>
         ) : (
 

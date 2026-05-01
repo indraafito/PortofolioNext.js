@@ -17,7 +17,7 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
     return (
       <div 
         ref={ref} 
-        className={cn("flex flex-col items-center justify-center gap-3", className)}
+        role="status" aria-live="polite" className={cn("flex flex-col items-center justify-center gap-3 text-primary", className)}
         {...props}
       >
         <div 
@@ -27,7 +27,7 @@ const LoadingSpinner = React.forwardRef<HTMLDivElement, LoadingSpinnerProps>(
           )}
         />
         {text && (
-          <p className="text-white/80 text-sm font-medium animate-pulse">
+          <p className="text-white/80 text-sm font-medium">
             {text}
           </p>
         )}

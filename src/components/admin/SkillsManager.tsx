@@ -7,6 +7,7 @@ import { Plus, Edit, Trash2, X } from 'lucide-react';
 import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -108,7 +109,7 @@ const SkillsManager = () => {
     setFormData({ category: 'hard' });
   };
 
-  if (loading) return <div className="text-muted-foreground">Loading...</div>;
+  if (loading) return (<div className="min-h-[180px] flex items-center justify-center"><LoadingSpinner size="md" text="Loading..." /></div>);
 
   return (
     <div className="space-y-6">

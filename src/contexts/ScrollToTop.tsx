@@ -1,4 +1,4 @@
-"use client"; // penting untuk hook dan useEffect di Next.js 13+
+﻿"use client"; // penting untuk hook dan useEffect di Next.js 13+
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,7 @@ const ScrollToTop = () => {
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // ubah ke "auto" jika tidak mau efek halus
+      behavior: "auto", // ubah ke "auto" jika tidak mau efek halus
     });
   }, [pathname]);
 
@@ -17,3 +17,4 @@ const ScrollToTop = () => {
 };
 
 export default ScrollToTop;
+

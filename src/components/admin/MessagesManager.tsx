@@ -5,6 +5,7 @@ import { Trash2, Mail, MailOpen } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { apiDelete, apiGet, apiPatch } from '@/lib/api';
 import {
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -64,7 +65,7 @@ const MessagesManager = () => {
     }
   };
 
-  if (loading) return <div className="text-muted-foreground">Loading...</div>;
+  if (loading) return (<div className="min-h-[180px] flex items-center justify-center"><LoadingSpinner size="md" text="Loading..." /></div>);
 
   return (
     <div className="space-y-4">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -112,40 +112,31 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="min-h-screen flex items-center justify-center px-4 pt-20 md:pt-0">
-        <div className="container max-w-6xl">
+    <div className="overflow-x-hidden">
+      {/* Hero Section - padding atas agar tidak tertutup header, padding bawah lebih lega di desktop */}
+      <div className="pt-20 pb-4 sm:pt-24 sm:pb-6 md:pt-32 md:pb-20 lg:pt-40 lg:pb-24 px-4">
+        <div className="container max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left Side Image */}
+            {/* Left Side Image - ukuran lebih kecil di mobile */}
             <div className="flex justify-center md:justify-end order-1 md:order-1">
-              <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-96 md:h-[28rem] flex items-center justify-center overflow-visible">
-                {/* Glow Effect */}
+              <div className="relative w-[min(60%,220px)] sm:w-[min(70%,320px)] md:w-[min(85%,380px)] lg:w-[min(80%,420px)] aspect-square">
                 <div
                   className="absolute inset-0 rounded-full"
                   style={{
-                    background: `radial-gradient(circle at 50% 50%, hsl(var(--primary-glow) / 1), transparent)`,
-                    filter: "blur(120px)",
-                    zIndex: -1,
+                    background: `radial-gradient(circle at 50% 50%, hsl(var(--primary-glow) / 0.8), transparent 70%)`,
+                    filter: "blur(min(60px, 6vw))",
                     animation: "fireGlow 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite",
                     transformOrigin: "center center",
                   }}
                 />
-                {/* Profile Image */}
                 <img
                   src={profile.photo_url || "/afito-profile.png"}
                   alt="Profile"
-                  className="w-56 h-56 sm:w-64 sm:h-64 md:w-full md:h-full rounded-full object-cover z-10"
+                  className="w-full h-full rounded-full object-cover z-10 relative"
                 />
-                {/* Gradient Shadow */}
                 <div
-                  className="absolute bottom-0 left-0 w-full h-36 pointer-events-none"
-                  style={{
-                    background: "linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0))",
-                    transform: "translateY(100%) scaleY(0.9)",
-                    filter: "blur(18px)",
-                    opacity: 0.65,
-                  }}
+                  className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-4 bg-black/40 blur-xl rounded-full pointer-events-none"
+                  style={{ opacity: 0.5 }}
                 />
               </div>
             </div>
@@ -172,31 +163,31 @@ const Home = () => {
                 if (!el) return;
                 el.style.setProperty("--cursor-opacity", "0");
               }}
-              className="space-y-4 md:space-y-6 text-center md:text-left order-2 md:order-2 animate-fade-in cursor-area"
+              className="space-y-4 md:space-y-5 text-center md:text-left order-2 md:order-2 animate-fade-in cursor-area"
             >
               <BlurText
                 text={profile.full_name}
-                className="text-3xl sm:text-4xl md:text-5xl font-bold glow-text mb-2 leading-tight"
+                className="text-4xl sm:text-5xl md:text-6xl font-bold glow-text mb-2 leading-tight"
                 delay={0.1}
                 duration={0.8}
               />
               <BlurText
                 text={profile.title}
-                className="text-xl sm:text-2xl text-primary font-semibold mb-4"
+                className="text-2xl sm:text-3xl md:text-4xl text-primary font-semibold mb-3"
                 delay={0.3}
                 duration={0.8}
               />
               <BlurText
                 text={profile.tagline}
-                className="text-base sm:text-lg text-muted-foreground max-w-xl mb-6"
+                className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0 mb-5"
                 delay={0.5}
                 duration={0.8}
               />
 
-              <div className="flex flex-wrap gap-3 md:gap-4 justify-center md:justify-start pt-2 md:pt-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-1">
                 <Link href="/projects" passHref>
                   <Button
-                    className="rounded-full px-5 md:px-6 py-2.5 h-10 md:h-11 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50 transition-all duration-300 hover:scale-105 focus-visible:ring-0"
+                    className="rounded-full px-6 py-3 h-11 md:h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50 transition-all duration-300 hover:scale-105 focus-visible:ring-0 text-base md:text-lg"
                     size="lg"
                   >
                     View Projects
@@ -207,35 +198,35 @@ const Home = () => {
                   <Button
                     variant="ghost"
                     size="lg"
-                    className="rounded-full px-5 md:px-6 py-2.5 h-10 md:h-11 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 focus-visible:ring-0"
+                    className="rounded-full px-6 py-3 h-11 md:h-12 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 focus-visible:ring-0 text-base md:text-lg"
                   >
                     Contact Me
                   </Button>
                 </Link>
               </div>
 
-              <div className="flex gap-3 md:gap-4 justify-center md:justify-start pt-2 md:pt-4">
+              <div className="flex gap-4 justify-center md:justify-start pt-2">
                 <a
                   href="https://github.com/indraafito"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 md:p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
+                  className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
-                  <Github className="h-4 w-4 md:h-5 md:w-5" />
+                  <Github className="h-5 w-5" />
                 </a>
                 <a
                   href="https://linkedin.com/in/indraafito"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 md:p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
+                  className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
-                  <Linkedin className="h-4 w-4 md:h-5 md:w-5" />
+                  <Linkedin className="h-5 w-5" />
                 </a>
                 <a
                   href="mailto:indraafito56@gmail.com"
-                  className="p-2.5 md:p-3 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
+                  className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-110"
                 >
-                  <Mail className="h-4 w-4 md:h-5 md:w-5" />
+                  <Mail className="h-5 w-5" />
                 </a>
               </div>
             </div>
@@ -245,25 +236,25 @@ const Home = () => {
 
       {/* Education Preview Section */}
       {education.length > 0 && (
-        <div className="container mx-auto px-4 py-16 md:py-20">
+        <div className="container mx-auto px-4 py-6 md:py-10">
           <div className="max-w-6xl mx-auto">
             <div data-aos="fade-up">
-              <div className="flex items-center justify-between mb-10 md:mb-12">
+              <div className="flex items-center justify-between mb-5 md:mb-8">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold glow-text mb-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold glow-text mb-1">
                     Education Journey
                   </h2>
-                  <p className="text-muted-foreground text-sm md:text-base">
+                  <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
                     My educational background
                   </p>
                 </div>
                 <Link href="/about">
                   <Button
                     variant="ghost"
-                    className="rounded-full px-4 md:px-5 py-2 h-9 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0 text-sm"
+                    className="rounded-full px-3 py-1 h-7 md:h-8 text-white/80 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300 focus-visible:ring-0 text-xs md:text-sm"
                   >
                     View Details
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="ml-1 h-3 w-3" />
                   </Button>
                 </Link>
               </div>
@@ -275,7 +266,7 @@ const Home = () => {
                 className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
                 style={{ transform: "translateY(-50%)" }}
               />
-              <div className="relative flex justify-between items-center py-20">
+              <div className="relative flex justify-between items-center py-10">
                 {education.map((edu, index) => {
                   const isTop = index % 2 === 0;
                   return (
@@ -288,15 +279,15 @@ const Home = () => {
                     >
                       <div
                         className={`flex flex-col items-center ${
-                          isTop ? "mb-8 order-1" : "mt-8 order-3"
+                          isTop ? "mb-5 order-1" : "mt-5 order-3"
                         }`}
                       >
-                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group w-48">
-                          <div className="flex flex-col items-center text-center gap-2">
-                            <div className="p-2 rounded-xl bg-primary/10 border border-primary/30 group-hover:scale-110 transition-transform duration-300">
-                              <GraduationCap className="h-5 w-5 text-primary" />
+                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-3 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group w-36 lg:w-44">
+                          <div className="flex flex-col items-center text-center gap-1">
+                            <div className="p-1.5 rounded-xl bg-primary/10 border border-primary/30 group-hover:scale-110 transition-transform duration-300">
+                              <GraduationCap className="h-4 w-4 text-primary" />
                             </div>
-                            <h3 className="text-sm font-bold text-white/90 line-clamp-2">
+                            <h3 className="text-xs lg:text-sm font-bold text-white/90 line-clamp-2">
                               {edu.institution}
                             </h3>
                             <p className="text-xs text-primary font-medium">
@@ -305,7 +296,7 @@ const Home = () => {
                           </div>
                         </div>
                         <div
-                          className={`w-0.5 h-8 ${
+                          className={`w-0.5 h-5 ${
                             isTop
                               ? "bg-gradient-to-b order-2"
                               : "bg-gradient-to-t order-1"
@@ -313,7 +304,7 @@ const Home = () => {
                         />
                       </div>
                       <div className="relative z-10 order-2">
-                        <div className="w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg shadow-primary/50" />
+                        <div className="w-3 h-3 rounded-full bg-primary border-2 border-background shadow-lg shadow-primary/50" />
                       </div>
                     </div>
                   );
@@ -322,41 +313,39 @@ const Home = () => {
             </div>
 
             {/* Mobile: Vertical Timeline */}
-            <div className="flex md:hidden flex-col gap-2 py-4">
+            <div className="flex md:hidden flex-col gap-2 py-3">
               {education.map((edu, index) => (
                 <div
                   key={edu.id}
                   data-aos="fade-up"
                   data-aos-delay={index * 150}
-                  className="flex items-start gap-4"
+                  className="flex items-start gap-3"
                 >
-                  {/* Dot + vertical line */}
                   <div className="flex flex-col items-center pt-1">
-                    <div className="w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg shadow-primary/50 shrink-0" />
+                    <div className="w-3 h-3 rounded-full bg-primary border-2 border-background shadow-lg shadow-primary/50 shrink-0" />
                     {index < education.length - 1 && (
                       <div
                         className="w-0.5 bg-gradient-to-b from-primary/50 to-transparent mt-1"
-                        style={{ minHeight: "48px" }}
+                        style={{ minHeight: "36px" }}
                       />
                     )}
                   </div>
-                  {/* Card */}
-                  <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group flex-1 mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-primary/10 border border-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
-                        <GraduationCap className="h-5 w-5 text-primary" />
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-3 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 group flex-1 mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-xl bg-primary/10 border border-primary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                        <GraduationCap className="h-4 w-4 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold text-white/90 leading-snug">
+                        <h3 className="text-xs font-bold text-white/90 leading-snug">
                           {edu.institution}
                         </h3>
                         {edu.degree && (
-                          <p className="text-xs text-white/50 mt-0.5">
+                          <p className="text-[10px] text-white/50 mt-0.5">
                             {edu.degree}
                             {edu.field_of_study ? ` — ${edu.field_of_study}` : ""}
                           </p>
                         )}
-                        <p className="text-xs text-primary font-medium mt-1">
+                        <p className="text-[10px] text-primary font-medium mt-0.5">
                           {edu.start_year} - {edu.end_year || "Present"}
                         </p>
                       </div>
@@ -371,12 +360,12 @@ const Home = () => {
 
       {/* Skills Preview Section */}
       {skills.length > 0 && (
-        <div className="container mx-auto px-4 py-16 md:py-20">
+        <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-6xl mx-auto">
             <div data-aos="fade-up">
-              <div className="flex items-center justify-between mb-10 md:mb-12">
+              <div className="flex items-center justify-between mb-8 md:mb-12">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold glow-text mb-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold glow-text mb-2">
                     Skills
                   </h2>
                   <p className="text-muted-foreground text-sm md:text-base">
@@ -408,12 +397,12 @@ const Home = () => {
 
       {/* Projects Preview Section */}
       {projects.length > 0 && (
-        <div className="container mx-auto px-4 py-16 md:py-20">
+        <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-6xl mx-auto">
             <div data-aos="fade-up">
-              <div className="flex items-center justify-between mb-10 md:mb-12">
+              <div className="flex items-center justify-between mb-8 md:mb-12">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold glow-text mb-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold glow-text mb-2">
                     Featured Projects
                   </h2>
                   <p className="text-muted-foreground text-sm md:text-base">

@@ -75,7 +75,7 @@ export const Navigation = () => {
           >
             <span className="flex items-center gap-2.5 text-white">
               <span className="relative">
-                {isAdmin ? "Dashboard" : "Moriartyy."}
+                {isAdmin ? "Dashboard" : "indraafito."}
               </span>
             </span>
           </Link>

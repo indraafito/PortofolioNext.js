@@ -12,12 +12,19 @@ export const metadata: Metadata = {
     default: 'Afito Indra Permana | Front-End Developer',
     template: '%s | Afito Indra Permana',
   },
+  applicationName: 'Afito Indra Permana',
   description: 'Mahasiswa S1 Teknik Informatika Universitas Negeri Malang, fokus pada Frontend Developer dan UI/UX Design, serta penerima Beasiswa Bank Indonesia 2025.',
   keywords: ['front-end developer', 'React developer', 'Next.js developer', 'web developer malang', 'freelance developer Indonesia'],
   authors: [{ name: 'Afito Indra Permana' }],
   metadataBase: new URL('https://afito-indra.vercel.app'),
   icons: {
-    icon: '/favicon.png',
+    icon: [
+      { url: '/favicon.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.png', sizes: '192x192', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   verification: {
     google: '8c6422a7af82cdd6',
@@ -26,7 +33,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'id_ID',
     url: 'https://afito-indra.vercel.app',
-    siteName: 'Afito Indra Permana Portfolio',
+    siteName: 'Afito Indra Permana',
     title: 'Afito Indra Permana | Front-End Developer',
     description: 'Mahasiswa S1 Teknik Informatika Universitas Negeri Malang, fokus pada Frontend Developer dan UI/UX Design, serta penerima Beasiswa Bank Indonesia 2025.',
     images: [
